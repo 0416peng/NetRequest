@@ -26,14 +26,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-      //  Button button =findViewById(R.id.button);
-        //Intent intent=new Intent(this,MainActivity2.class);
-        //button.setOnClickListener(new View.OnClickListener() {
-          //  @Override
-            //public void onClick(View view) {
-              //  startActivity(intent);
-            //}
-        //});
+       /* Button button =findViewById(R.id.button);
+        Intent intent=new Intent(this,MainActivity2.class);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(intent);
+            }
+        });*/
         super.onCreate(savedInstanceState);EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         //初始化控件
