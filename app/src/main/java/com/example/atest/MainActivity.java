@@ -3,7 +3,6 @@ package com.example.atest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG ="MainActivity";
     private RecyclerView recyclerView;
     private WeatherAdapter mweatherAdapter;
     private  List<Weather> mWeatherlist=new ArrayList<>();
@@ -26,16 +26,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       /* Button button =findViewById(R.id.button);
-        Intent intent=new Intent(this,MainActivity2.class);
+
+        super.onCreate(savedInstanceState);EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        //获取网络数据
+
+
+        //转到搜索界面
+        Button button =findViewById(R.id.button);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent =new Intent(MainActivity.this,MainActivity2.class);
                 startActivity(intent);
+                finish();
             }
-        });*/
-        super.onCreate(savedInstanceState);EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+
+        });
+        //获取搜索数据
+         Intent intent2=this.getIntent();
+        String city=intent2.getStringExtra("data_city");
+        String province=intent2.getStringExtra("data_province");
         //初始化控件
         recyclerView=findViewById(R.id.weatherlist);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
