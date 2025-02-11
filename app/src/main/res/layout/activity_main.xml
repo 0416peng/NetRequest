@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    >
 
     <LinearLayout
         android:id="@+id/main"
@@ -145,6 +147,7 @@
             android:gravity="top|center"
             android:text="a"
             android:textSize="30sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.089"
@@ -160,6 +163,7 @@
                 android:gravity="top|center"
                 android:text="a"
                 android:textSize="30sp"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.815"
@@ -182,6 +186,7 @@
             android:gravity="top|center"
             android:text="a"
             android:textSize="30sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.089"
@@ -197,6 +202,7 @@
             android:gravity="top|center"
             android:text="a"
             android:textSize="30sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.815"
@@ -214,6 +220,7 @@
             app:cardElevation="0.5dp">
 
             <TextView
+
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:gravity="center"
@@ -222,7 +229,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/pm2"
+                android:id="@+id/pm25"
                 android:layout_width="80dp"
                 android:layout_height="92dp"
                 android:gravity="center"
@@ -293,7 +300,7 @@
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:gravity=""
+
                 android:text="空气质量："
                 android:textSize="15dp"
                 />
@@ -301,7 +308,6 @@
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_gravity="right|center"
-                android:gravity=""
                 android:text="空气等级："
                 android:textSize="15dp"
                 />
@@ -320,6 +326,7 @@
                 android:background="@drawable/button_shape"
                 android:text="钓鱼指数\n适宜"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -335,6 +342,7 @@
                 android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="感冒指数\n易发"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -350,6 +358,7 @@
                 android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="洗车指数\n较不适宜"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -365,6 +374,7 @@
                 android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="过敏指数\n不易过敏"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -380,6 +390,7 @@
                 android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="运动指数\n较适宜"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -395,6 +406,7 @@
                 android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="紫外线指数\n中等"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

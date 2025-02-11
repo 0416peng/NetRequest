@@ -2,17 +2,22 @@ package com.example.atest;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,18 +37,28 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private WeatherAdapter mweatherAdapter;
     private  List<Weather> mWeatherlist=new ArrayList<>();
-     private String mUrl = "https://v3.alapi.cn/api/tianqi";
-     private Button loadjson;
-     private String token ="fv5fkmgrg3rvjkoddbqeqqzqqkzl8y" ;
-     private String city ;
-     private String province;
+    private String mUrl = "https://v3.alapi.cn/api/tianqi";
+    private String nurl ="https://v3.alapi.cn/api/tianqi/forty";
+    private Button loadjson;
+    private String token ="fv5fkmgrg3rvjkoddbqeqqzqqkzl8y" ;
+    private String city ;
+    private String province;
+    private TextView tvcity;
+
+    private Handler mHandler;
+    private Handler mHandler2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        tvcity = findViewById(R.id.city);
+
         loadjson=findViewById(R.id.loadjson);
+        mHandler =new MyHandler();
+        mHandler2 =new MyHandler2();
         initClick();
         //转到搜索界面
         Button button = findViewById(R.id.button);
@@ -58,9 +74,8 @@ public class MainActivity extends AppCompatActivity {
         });
         //获取搜索数据
         Intent intent2 = this.getIntent();
-         city = intent2.getStringExtra("data_city");
-         province = intent2.getStringExtra("data_province");
-
+        city = intent2.getStringExtra("data_city");
+        province = intent2.getStringExtra("data_province");
 
         //初始化控件
         recyclerView = findViewById(R.id.weatherlist);
@@ -89,38 +104,29 @@ public class MainActivity extends AppCompatActivity {
     }
     //获取网络数据
     private void sendPOSTRequest(String mUrl,HashMap<String,String>params){
-        //lambda表达式，相当于其中new Runnable并且重写⽅法
+
         new Thread(
                 () -> {
                     try {
                         URL url = new URL(mUrl);
                         HttpURLConnection connection = (HttpURLConnection)
                                 url.openConnection();
-                        connection.setRequestMethod("POST");//设置请求⽅式为POST
-                        connection.setConnectTimeout(8000);//设置最⼤连接时间，单位为ms
-                        connection.setReadTimeout(8000);//设置最⼤的读取时间，单位为ms
-                        connection.setRequestProperty("Accept-Language",
-                                "zh-CN,zh;q=0.9");
-                        connection.setRequestProperty("Accept-Encoding",
-                                "gzip,deflate");
-                        connection.connect();//正式连接
-                        StringBuilder dataToWrite = new StringBuilder("{");
-                        boolean first =true;
+                        connection.setRequestMethod("POST");
+                        connection.setConnectTimeout(8000);
+                        connection.setReadTimeout(8000);
+                        connection.connect();
+                        StringBuilder dataToWrite = new StringBuilder();
                         for (String key : params.keySet()) {
-                            if (!first) {
-                                dataToWrite.append(",");
-                            }
-                            dataToWrite.append("\"").append(key).append("\":\"").append(params.get(key)).append("\"");
-                            first = false;
+                           dataToWrite.append(key).append("=").append(params.get(key)).append("&");
                         }
-                        dataToWrite.append("}");
-
                         connection.connect();
                         OutputStream outputStream = connection.getOutputStream();
-                        outputStream.write(dataToWrite.substring(0, dataToWrite.length() ).getBytes());//输出
-                        InputStream in = connection.getInputStream();//从接⼝处获取
-                        String responseData = StreamToString(in);//这⾥就是服务器返回的数据
-                        Log.d("lx", "sendPOSTNetRequest: "+responseData);
+                        outputStream.write(dataToWrite.substring(0,dataToWrite.length() - 1).getBytes());
+                        InputStream in = connection.getInputStream();
+                        String responseData = StreamToString(in);
+                        Message message =new Message();
+                        message.obj =responseData;
+                        mHandler.sendMessage(message);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -146,13 +152,96 @@ public class MainActivity extends AppCompatActivity {
         }
         return sb.toString();
     }
+    private void sendPOSTRequest2(String nUrl,HashMap<String,String>params){
+
+        new Thread(
+                () -> {
+                    try {
+                        URL url = new URL(nUrl);
+                        HttpURLConnection connection = (HttpURLConnection)
+                                url.openConnection();
+                        connection.setRequestMethod("POST");
+                        connection.setConnectTimeout(8000);
+                        connection.setReadTimeout(8000);
+                        connection.connect();
+                        StringBuilder dataToWrite = new StringBuilder();
+                        for (String key : params.keySet()) {
+                            dataToWrite.append(key).append("=").append(params.get(key)).append("&");
+                        }
+                        connection.connect();
+                        OutputStream outputStream = connection.getOutputStream();
+                        outputStream.write(dataToWrite.substring(0,dataToWrite.length() - 1).getBytes());
+                        InputStream in = connection.getInputStream();
+                        String responseData = StreamToString2(in);
+                        Message message =new Message();
+                        message.obj =responseData;
+                        mHandler2.sendMessage(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        ).start();
+    }
+    private String StreamToString2(InputStream in) {
+        StringBuilder sb = new StringBuilder();
+        String oneLine;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        try {
+            while ((oneLine = reader.readLine()) != null) {
+                sb.append(oneLine).append('\n');
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
     private void initClick(){
         loadjson.setOnClickListener(v -> {
-            HashMap<String,String> params = new HashMap<>();
-            params.put("token",token);
-            params.put("city",city);
+            LinkedHashMap<String,String> params = new LinkedHashMap<>();
+            params.put("token","fv5fkmgrg3rvjkoddbqeqqzqqkzl8y");
             params.put("province",province);
+            params.put("city",city);
             sendPOSTRequest(mUrl,params);
+            sendPOSTRequest2(nurl,params);
         });
 
-            }}
+
+    }
+    private class MyHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            String result = (String) msg.obj;
+            parseJsondataAndShow(result);
+        }
+        public void parseJsondataAndShow(String jsonStr) {
+            Gson gson =new Gson();
+            WeatherBean weatherBean =gson.fromJson(jsonStr,WeatherBean.class);
+
+        }
+    }
+    private class MyHandler2 extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            String result = (String) msg.obj;
+            parseJsondataAndShow2(result);
+        }
+
+
+
+        public void parseJsondataAndShow2(String jsonStr) {
+            Gson gson =new Gson();
+            WeatherBean2 weatherBean2 =gson.fromJson(jsonStr,WeatherBean2.class);
+        }
+    }
+
+
+
+}
