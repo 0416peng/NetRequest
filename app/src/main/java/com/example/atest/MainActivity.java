@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -44,18 +45,55 @@ public class MainActivity extends AppCompatActivity {
     private String city ;
     private String province;
     private TextView tvcity;
+    private TextView tvweather;
+    private TextView tvtemp;
+
+    private  TextView tvpm25;
+    private  TextView tvpm10;
+    private TextView tvso2;
+    private  TextView tvco;
+    private TextView tvair;
+    private TextView tvair_level;
+    private Button burain;
+    private Button buhumidity;
+    private Button bupressure;
+    private Button buvisibility;
+    private Button budiaoyu_index;
+    private Button buganmao_index;
+    private Button buxiche_index;
+    private Button buguoming_index;
+    private Button buyundong_index;
+    private Button buziwaixian_index;
 
     private Handler mHandler;
     private Handler mHandler2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        //绑定
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         tvcity = findViewById(R.id.city);
-
+        //tvtips =findViewById(R.id.airtips);
+        tvair=findViewById(R.id.air);
+        tvair_level=findViewById(R.id.air_level);
+        tvco=findViewById(R.id.co);
+        tvpm10=findViewById(R.id.pm10);
+        tvso2=findViewById(R.id.so2);
+        tvpm25=findViewById(R.id.pm25);
+        tvtemp=findViewById(R.id.temperature);
+        tvweather=findViewById(R.id.weather);
+        burain=findViewById(R.id.rain);
+        buhumidity=findViewById(R.id.humidity);
+        bupressure=findViewById(R.id.pressure);
+        buvisibility=findViewById(R.id.visibility);
+        budiaoyu_index=findViewById(R.id.diaoyu_index);
+        buganmao_index=findViewById(R.id.ganmao_index);
+        buguoming_index=findViewById(R.id.guoming_index);
+        buxiche_index=findViewById(R.id.xiche_index);
+        buyundong_index=findViewById(R.id.yundong_index);
+        buziwaixian_index=findViewById(R.id.ziwaixian_index);
         loadjson=findViewById(R.id.loadjson);
         mHandler =new MyHandler();
         mHandler2 =new MyHandler2();
@@ -81,13 +119,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.weatherlist);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //数据
-        mWeatherlist.add(new Weather("a", "A", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
 
         //初始化适配器
         mweatherAdapter = new WeatherAdapter(mWeatherlist);
@@ -173,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         outputStream.write(dataToWrite.substring(0,dataToWrite.length() - 1).getBytes());
                         InputStream in = connection.getInputStream();
                         String responseData = StreamToString2(in);
+                        Log.d("lx","responseData"+responseData);
                         Message message =new Message();
                         message.obj =responseData;
                         mHandler2.sendMessage(message);
@@ -223,9 +255,73 @@ public class MainActivity extends AppCompatActivity {
         public void parseJsondataAndShow(String jsonStr) {
             Gson gson =new Gson();
             WeatherBean weatherBean =gson.fromJson(jsonStr,WeatherBean.class);
+            String message = weatherBean.getMessage();
+            if(message.equals("success")){
+            String city = weatherBean.getData().getCity();
+                tvcity.setText(city);
+                String weather = weatherBean.getData().getWeather();
+                int mintemp = weatherBean.getData().getMinTemp();
+                String min = String.valueOf(mintemp);
+                int maxtemp = weatherBean.getData().getMaxTemp();
+                String max = String.valueOf(maxtemp);
+                tvweather.setText(weather + min + "℃" + "--" + max + "℃");
+                Double temp = weatherBean.getData().getTemp();
+                int temp1=(int)temp.doubleValue();
+                String temp2;
+                temp2 = String.valueOf(temp1);
+                tvtemp.setText(temp2);
+                String air = weatherBean.getData().getAir();
+                tvair.setText(air);
+                String co = weatherBean.getData().getAqi().getCo();
+                tvco.setText(co);
+                String so2 = weatherBean.getData().getAqi().getSo2();
+                tvso2.setText(so2);
+                String pm10 = weatherBean.getData().getAqi().getPm10();
+                tvpm10.setText(pm10);
+                String pm25 = weatherBean.getData().getAqi().getPm25();
+                tvpm25.setText(pm25);
+                String air_level = weatherBean.getData().getAqi().getAirLevel();
+                tvair_level.setText(air_level);
+                String rain = weatherBean.getData().getRain();
+                burain.setText("降雨量\n" + rain);
+                String humidity = weatherBean.getData().getHumidity();
+                buhumidity.setText("湿度\n" + humidity);
+                String pressure = weatherBean.getData().getPressure();
+                bupressure.setText("气压\n" + pressure);
+                String visibility = weatherBean.getData().getVisibility();
+                buvisibility.setText("能见度\n" + visibility);
+                List<WeatherBean.DataDTO.IndexDTO> Index = weatherBean.getData().getIndex();
+                WeatherBean.DataDTO.IndexDTO indexDTO1 = Index.get(0);
+                String name1 = indexDTO1.getName();
+                String level1 = indexDTO1.getLevel();
+                buganmao_index.setText(name1 + "\n" + level1);
+                WeatherBean.DataDTO.IndexDTO indexDTO2 = Index.get(1);
+                String name2 = indexDTO2.getName();
+                String level2 = indexDTO2.getLevel();
+                budiaoyu_index.setText(name2 + "\n" + level2);
+                WeatherBean.DataDTO.IndexDTO indexDTO3 = Index.get(2);
+                String name3 = indexDTO3.getName();
+                String level3 = indexDTO3.getLevel();
+                buguoming_index.setText(name3 + "\n" + level3);
+                WeatherBean.DataDTO.IndexDTO indexDTO4 = Index.get(3);
+                String name4 = indexDTO4.getName();
+                String level4 = indexDTO4.getLevel();
+                buxiche_index.setText(name4 + "\n" + level4);
+                WeatherBean.DataDTO.IndexDTO indexDTO5 = Index.get(4);
+                String name5 = indexDTO5.getName();
+                String level5 = indexDTO5.getLevel();
+                buyundong_index.setText(name5 + "\n" + level5);
+                WeatherBean.DataDTO.IndexDTO indexDTO6 = Index.get(5);
+                String name6 = indexDTO6.getName();
+                String level6 = indexDTO6.getLevel();
+                buziwaixian_index.setText(name6 + "\n" + level6);
 
-        }
     }
+        else{
+        tvcity.setText(message);
+        }
+        }
+        }
     private class MyHandler2 extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -239,9 +335,65 @@ public class MainActivity extends AppCompatActivity {
         public void parseJsondataAndShow2(String jsonStr) {
             Gson gson =new Gson();
             WeatherBean2 weatherBean2 =gson.fromJson(jsonStr,WeatherBean2.class);
+            String message = weatherBean2.getMessage();
+            if(message.equals("success")){
+                List<WeatherBean2.DataDTO>data = weatherBean2.getData();
+                WeatherBean2.DataDTO dataDTO0 = data.get(0);
+                String date0 = dataDTO0.getDate();
+                String tempday0 = dataDTO0.getTempDay();
+                String tempnight0 = dataDTO0.getTempNight();
+                String weather0 = dataDTO0.getWeaDay();
+
+                WeatherBean2.DataDTO dataDTO1 = data.get(1);
+                String date1 = dataDTO1.getDate();
+                String tempday1 = dataDTO1.getTempDay();
+                String tempnight1 = dataDTO1.getTempNight();
+                String weather1 = dataDTO1.getWeaDay();
+
+                WeatherBean2.DataDTO dataDTO2 = data.get(2);
+                String date2 = dataDTO2.getDate();
+                String tempday2 = dataDTO2.getTempDay();
+                String tempnight2 = dataDTO2.getTempNight();
+                String weather2 = dataDTO2.getWeaDay();
+
+                WeatherBean2.DataDTO dataDTO3 = data.get(3);
+                String date3 = dataDTO3.getDate();
+                String tempday3 = dataDTO3.getTempDay();
+                String tempnight3 = dataDTO3.getTempNight();
+                String weather3 = dataDTO3.getWeaDay();
+
+                WeatherBean2.DataDTO dataDTO4 = data.get(4);
+                String date4 = dataDTO4.getDate();
+                String tempday4 = dataDTO4.getTempDay();
+                String tempnight4 = dataDTO4.getTempNight();
+                String weather4 = dataDTO4.getWeaDay();
+
+                WeatherBean2.DataDTO dataDTO5 = data.get(5);
+                String date5 = dataDTO5.getDate();
+                String tempday5 = dataDTO5.getTempDay();
+                String tempnight5 = dataDTO5.getTempNight();
+                String weather5 = dataDTO5.getWeaDay();
+
+                WeatherBean2.DataDTO dataDTO6 = data.get(6);
+                String date6 = dataDTO6.getDate();
+                String tempday6 = dataDTO6.getTempDay();
+                String tempnight6 = dataDTO6.getTempNight();
+                String weather6 = dataDTO6.getWeaDay();
+                mWeatherlist.add(new Weather(weather0, tempday0 + "-" + tempnight0, date0));
+                mWeatherlist.add(new Weather(weather1, tempday1 + "-" + tempnight1, date1));
+                mWeatherlist.add(new Weather(weather2, tempday2 + "-" + tempnight2, date2));
+                mWeatherlist.add(new Weather(weather3, tempday3 + "-" + tempnight3, date3));
+                mWeatherlist.add(new Weather(weather4, tempday4 + "-" + tempnight4, date4));
+                mWeatherlist.add(new Weather(weather5, tempday5 + "-" + tempnight5, date5));
+                mWeatherlist.add(new Weather(weather6, tempday6 + "-" + tempnight6, date6));
+            }else{
+                tvcity.setText(message);
+            }
         }
-    }
 
 
 
-}
+    }}
+
+
+
