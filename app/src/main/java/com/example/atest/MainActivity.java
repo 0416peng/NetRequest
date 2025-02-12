@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private Button loadjson;
     private String token ="fv5fkmgrg3rvjkoddbqeqqzqqkzl8y" ;
     private String city ;
-    private String province;
+    private String province ;
     private TextView tvcity;
     private TextView tvweather;
     private TextView tvtemp;
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler mHandler;
     private Handler mHandler2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,16 +111,27 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        //获取搜索数据
+        //获取搜索数据并进行一次搜索
         Intent intent2 = this.getIntent();
         city = intent2.getStringExtra("data_city");
         province = intent2.getStringExtra("data_province");
-
+        LinkedHashMap<String,String> params = new LinkedHashMap<>();
+        params.put("token","fv5fkmgrg3rvjkoddbqeqqzqqkzl8y");
+        params.put("province",province);
+        params.put("city",city);
+        sendPOSTRequest(mUrl,params);
+        sendPOSTRequest2(nurl,params);
         //初始化控件
         recyclerView = findViewById(R.id.weatherlist);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //数据
-
+        mWeatherlist.add(new Weather("a", "A", "02/02"));
+        mWeatherlist.add(new Weather("b", "B", "02/02"));
+        mWeatherlist.add(new Weather("b", "B", "02/02"));
+        mWeatherlist.add(new Weather("b", "B", "02/02"));
+        mWeatherlist.add(new Weather("b", "B", "02/02"));
+        mWeatherlist.add(new Weather("b", "B", "02/02"));
+        mWeatherlist.add(new Weather("b", "B", "02/02"));
         //初始化适配器
         mweatherAdapter = new WeatherAdapter(mWeatherlist);
         //设置适配器
@@ -322,73 +334,70 @@ public class MainActivity extends AppCompatActivity {
         }
         }
         }
-    private class MyHandler2 extends Handler {
+    public class MyHandler2 extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             String result = (String) msg.obj;
-            parseJsondataAndShow2(result);
+            ParseJsondata(result);
         }
 
 
 
-        public void parseJsondataAndShow2(String jsonStr) {
-            Gson gson =new Gson();
-            WeatherBean2 weatherBean2 =gson.fromJson(jsonStr,WeatherBean2.class);
+        private void ParseJsondata(String jsonStr) {
+            Gson gson = new Gson();
+            WeatherBean2 weatherBean2 = gson.fromJson(jsonStr, WeatherBean2.class);
             String message = weatherBean2.getMessage();
-            if(message.equals("success")){
-                List<WeatherBean2.DataDTO>data = weatherBean2.getData();
+            if (message.equals("success")) {
+                List<WeatherBean2.DataDTO> data ;
+                data=weatherBean2.getData();
                 WeatherBean2.DataDTO dataDTO0 = data.get(0);
-                String date0 = dataDTO0.getDate();
+                String date0 = (dataDTO0.getDate()).substring(5);
                 String tempday0 = dataDTO0.getTempDay();
-                String tempnight0 = dataDTO0.getTempNight();
                 String weather0 = dataDTO0.getWeaDay();
 
                 WeatherBean2.DataDTO dataDTO1 = data.get(1);
-                String date1 = dataDTO1.getDate();
+                String date1 = (dataDTO1.getDate()).substring(5);
                 String tempday1 = dataDTO1.getTempDay();
-                String tempnight1 = dataDTO1.getTempNight();
                 String weather1 = dataDTO1.getWeaDay();
 
                 WeatherBean2.DataDTO dataDTO2 = data.get(2);
-                String date2 = dataDTO2.getDate();
+                String date2 = (dataDTO2.getDate()).substring(5);
                 String tempday2 = dataDTO2.getTempDay();
-                String tempnight2 = dataDTO2.getTempNight();
                 String weather2 = dataDTO2.getWeaDay();
 
                 WeatherBean2.DataDTO dataDTO3 = data.get(3);
-                String date3 = dataDTO3.getDate();
+                String date3 = (dataDTO3.getDate()).substring(5);
                 String tempday3 = dataDTO3.getTempDay();
-                String tempnight3 = dataDTO3.getTempNight();
                 String weather3 = dataDTO3.getWeaDay();
 
                 WeatherBean2.DataDTO dataDTO4 = data.get(4);
-                String date4 = dataDTO4.getDate();
+                String date4 = (dataDTO4.getDate()).substring(5);
                 String tempday4 = dataDTO4.getTempDay();
-                String tempnight4 = dataDTO4.getTempNight();
                 String weather4 = dataDTO4.getWeaDay();
 
                 WeatherBean2.DataDTO dataDTO5 = data.get(5);
-                String date5 = dataDTO5.getDate();
+                String date5 = (dataDTO5.getDate()).substring(5);
                 String tempday5 = dataDTO5.getTempDay();
-                String tempnight5 = dataDTO5.getTempNight();
                 String weather5 = dataDTO5.getWeaDay();
 
                 WeatherBean2.DataDTO dataDTO6 = data.get(6);
-                String date6 = dataDTO6.getDate();
+                String date6 = (dataDTO6.getDate()).substring(5);
                 String tempday6 = dataDTO6.getTempDay();
-                String tempnight6 = dataDTO6.getTempNight();
                 String weather6 = dataDTO6.getWeaDay();
-                mWeatherlist.add(new Weather(weather0, tempday0 + "-" + tempnight0, date0));
-                mWeatherlist.add(new Weather(weather1, tempday1 + "-" + tempnight1, date1));
-                mWeatherlist.add(new Weather(weather2, tempday2 + "-" + tempnight2, date2));
-                mWeatherlist.add(new Weather(weather3, tempday3 + "-" + tempnight3, date3));
-                mWeatherlist.add(new Weather(weather4, tempday4 + "-" + tempnight4, date4));
-                mWeatherlist.add(new Weather(weather5, tempday5 + "-" + tempnight5, date5));
-                mWeatherlist.add(new Weather(weather6, tempday6 + "-" + tempnight6, date6));
-            }else{
-                tvcity.setText(message);
+                mWeatherlist.set(0,new Weather(weather0,tempday0, date0));
+                mWeatherlist.set(1,new Weather(weather1,tempday1, date1));
+                mWeatherlist.set(2,new Weather(weather2,tempday2, date2));
+                mWeatherlist.set(3,new Weather(weather3,tempday3, date3));
+                mWeatherlist.set(4,new Weather(weather4,tempday4, date4));
+                mWeatherlist.set(5,new Weather(weather5,tempday5, date5));
+                mWeatherlist.set(6,new Weather(weather6,tempday6, date6));
+                mweatherAdapter.notifyDataSetChanged();
+            } else {
+                mWeatherlist.set(0,new Weather("null","null","null"));
+                mweatherAdapter.notifyDataSetChanged();
             }
+
         }
 
 

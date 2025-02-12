@@ -27,7 +27,7 @@ public class  MainActivity2 extends AppCompatActivity {
         EditText province=findViewById(R.id.province);
         EditText city2=findViewById(R.id.city2);
         Intent intent3 =new Intent(this,MainActivity.class);
-         button2=findViewById(R.id.back);
+        button2=findViewById(R.id.back);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
