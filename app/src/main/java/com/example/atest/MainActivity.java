@@ -290,13 +290,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
+            if(msg.obj!=null){
             String result = (String) msg.obj;
-            parseJsondataAndShow(result);
-        }
+            parseJsondataAndShow(result);}
+            else{
+                mWeatherlist.add(new Weather("null","null","null"));
+            }        }
         public void parseJsondataAndShow(String jsonStr) {
             Gson gson =new Gson();
             WeatherBean weatherBean =gson.fromJson(jsonStr,WeatherBean.class);
-            String message = weatherBean.getMessage();
+
             if(weatherBean.getData()!=null){
             String city = weatherBean.getData().getCity();
                 tvcity.setText(city);
@@ -332,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
                 String visibility = weatherBean.getData().getVisibility();
                 buvisibility.setText("能见度\n" + visibility);
                 List<WeatherBean.DataDTO.IndexDTO> Index = weatherBean.getData().getIndex();
+                if(Index.get(0)!=null){
                 WeatherBean.DataDTO.IndexDTO indexDTO1 = Index.get(0);
                 String name1 = indexDTO1.getName();
                 String level1 = indexDTO1.getLevel();
@@ -355,11 +359,11 @@ public class MainActivity extends AppCompatActivity {
                 WeatherBean.DataDTO.IndexDTO indexDTO6 = Index.get(5);
                 String name6 = indexDTO6.getName();
                 String level6 = indexDTO6.getLevel();
-                buziwaixian_index.setText(name6 + "\n" + level6);
+                buziwaixian_index.setText(name6 + "\n" + level6);}
 
     }
         else{
-        tvcity.setText(message);
+        tvcity.setText("null");
         }
         }
         }
@@ -367,8 +371,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
+            if(msg.obj!=null){
             String result = (String) msg.obj;
-            ParseJsondata(result);
+                ParseJsondata(result);
+            }else{
+                tvcity.setText("null");
+            }
         }
 
 
@@ -376,7 +384,6 @@ public class MainActivity extends AppCompatActivity {
         private void ParseJsondata(String jsonStr) {
             Gson gson = new Gson();
             WeatherBean2 weatherBean2 = gson.fromJson(jsonStr, WeatherBean2.class);
-            String message = weatherBean2.getMessage();
             if (weatherBean2.getData()!=null) {
                 List<WeatherBean2.DataDTO> data ;
                 data=weatherBean2.getData();
@@ -384,8 +391,6 @@ public class MainActivity extends AppCompatActivity {
                     Weather weather =new Weather(dataDTO.getWeaDay(),dataDTO.getTempDay()+"℃",(dataDTO.getDate()).substring(5));
                     mWeatherlist.add(weather);
                 }
-
-
                 mweatherAdapter.notifyDataSetChanged();
             } else {
                 mWeatherlist.add(new Weather("null","null","null"));
