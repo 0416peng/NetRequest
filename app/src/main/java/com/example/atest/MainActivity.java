@@ -1,5 +1,10 @@
 
-
+/**
+ * description ： MainActivity用于展示主界面
+ * author : 彭思喆
+ * email : 13551439192@163.com
+ * date : 2025/2/15 20:00
+ */
 
 package com.example.atest;
 
