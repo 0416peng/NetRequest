@@ -1,6 +1,11 @@
+
+
+
 package com.example.atest;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,7 +39,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
+//定义
     private RecyclerView recyclerView;
     private WeatherAdapter mweatherAdapter;
     private  List<Weather> mWeatherlist=new ArrayList<>();
@@ -43,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Button loadjson;
     private String token ="fv5fkmgrg3rvjkoddbqeqqzqqkzl8y" ;
     private String city ;
-    private String province ;
+    private String province;
     private TextView tvcity;
     private TextView tvweather;
     private TextView tvtemp;
@@ -67,11 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler mHandler;
     private Handler mHandler2;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //绑定
+        //绑定控件
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mHandler =new MyHandler();
         mHandler2 =new MyHandler2();
         initClick();
+        initClick2();
         //转到搜索界面
         Button button = findViewById(R.id.button);
 
@@ -115,26 +119,33 @@ public class MainActivity extends AppCompatActivity {
         Intent intent2 = this.getIntent();
         city = intent2.getStringExtra("data_city");
         province = intent2.getStringExtra("data_province");
+        if(city==null){
+            SharedPreferences share = getSharedPreferences("myprefs", Context.MODE_PRIVATE);
+            city= share.getString("city",null);
+            province =share.getString("province",null);
+        }
+        //储存数据
+        SharedPreferences share = getSharedPreferences("myprefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = share.edit();
+        edit.putString("city",city);
+        edit.putString("province",province);
+        edit.commit();
         LinkedHashMap<String,String> params = new LinkedHashMap<>();
+        LinkedHashMap<String,String> params2 = new LinkedHashMap<>();
         params.put("token","fv5fkmgrg3rvjkoddbqeqqzqqkzl8y");
         params.put("province",province);
         params.put("city",city);
+        params2.put("token","sin9hceufk7hniqc78lsi0t3fy5w11");
+        params2.put("province",province);
+        params2.put("city",city);
         sendPOSTRequest(mUrl,params);
-        sendPOSTRequest2(nurl,params);
-        //初始化控件
+        sendPOSTRequest2(nurl,params2);
+        //初始化rv控件
         recyclerView = findViewById(R.id.weatherlist);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //数据
-        mWeatherlist.add(new Weather("a", "A", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        mWeatherlist.add(new Weather("b", "B", "02/02"));
-        //初始化适配器
+        //初始化rv适配器
         mweatherAdapter = new WeatherAdapter(mWeatherlist);
-        //设置适配器
+        //设置rv适配器
         recyclerView.setAdapter(mweatherAdapter);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -145,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
-    //获取网络数据
+    //获取网络数据（一天）
     private void sendPOSTRequest(String mUrl,HashMap<String,String>params){
 
         new Thread(
@@ -195,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return sb.toString();
     }
+    //获取网络数据（40天）
     private void sendPOSTRequest2(String nUrl,HashMap<String,String>params){
 
         new Thread(
@@ -245,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return sb.toString();
     }
+    //点击事件，进行网络请求
     private void initClick(){
         loadjson.setOnClickListener(v -> {
             LinkedHashMap<String,String> params = new LinkedHashMap<>();
@@ -252,11 +265,22 @@ public class MainActivity extends AppCompatActivity {
             params.put("province",province);
             params.put("city",city);
             sendPOSTRequest(mUrl,params);
+        });
+
+
+    }
+    private void initClick2(){
+        loadjson.setOnClickListener(v -> {
+            LinkedHashMap<String,String> params = new LinkedHashMap<>();
+            params.put("token","sin9hceufk7hniqc78lsi0t3fy5w11");
+            params.put("province",province);
+            params.put("city",city);
             sendPOSTRequest2(nurl,params);
         });
 
 
     }
+    //将获取的json数据转化并显示出来
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -268,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
             Gson gson =new Gson();
             WeatherBean weatherBean =gson.fromJson(jsonStr,WeatherBean.class);
             String message = weatherBean.getMessage();
-            if(message.equals("success")){
+            if(weatherBean.getData()!=null){
             String city = weatherBean.getData().getCity();
                 tvcity.setText(city);
                 String weather = weatherBean.getData().getWeather();
@@ -348,53 +372,18 @@ public class MainActivity extends AppCompatActivity {
             Gson gson = new Gson();
             WeatherBean2 weatherBean2 = gson.fromJson(jsonStr, WeatherBean2.class);
             String message = weatherBean2.getMessage();
-            if (message.equals("success")) {
+            if (weatherBean2.getData()!=null) {
                 List<WeatherBean2.DataDTO> data ;
                 data=weatherBean2.getData();
-                WeatherBean2.DataDTO dataDTO0 = data.get(0);
-                String date0 = (dataDTO0.getDate()).substring(5);
-                String tempday0 = dataDTO0.getTempDay();
-                String weather0 = dataDTO0.getWeaDay();
+                for(WeatherBean2.DataDTO dataDTO : data){
+                    Weather weather =new Weather(dataDTO.getWeaDay(),dataDTO.getTempDay()+"℃",(dataDTO.getDate()).substring(5));
+                    mWeatherlist.add(weather);
+                }
 
-                WeatherBean2.DataDTO dataDTO1 = data.get(1);
-                String date1 = (dataDTO1.getDate()).substring(5);
-                String tempday1 = dataDTO1.getTempDay();
-                String weather1 = dataDTO1.getWeaDay();
 
-                WeatherBean2.DataDTO dataDTO2 = data.get(2);
-                String date2 = (dataDTO2.getDate()).substring(5);
-                String tempday2 = dataDTO2.getTempDay();
-                String weather2 = dataDTO2.getWeaDay();
-
-                WeatherBean2.DataDTO dataDTO3 = data.get(3);
-                String date3 = (dataDTO3.getDate()).substring(5);
-                String tempday3 = dataDTO3.getTempDay();
-                String weather3 = dataDTO3.getWeaDay();
-
-                WeatherBean2.DataDTO dataDTO4 = data.get(4);
-                String date4 = (dataDTO4.getDate()).substring(5);
-                String tempday4 = dataDTO4.getTempDay();
-                String weather4 = dataDTO4.getWeaDay();
-
-                WeatherBean2.DataDTO dataDTO5 = data.get(5);
-                String date5 = (dataDTO5.getDate()).substring(5);
-                String tempday5 = dataDTO5.getTempDay();
-                String weather5 = dataDTO5.getWeaDay();
-
-                WeatherBean2.DataDTO dataDTO6 = data.get(6);
-                String date6 = (dataDTO6.getDate()).substring(5);
-                String tempday6 = dataDTO6.getTempDay();
-                String weather6 = dataDTO6.getWeaDay();
-                mWeatherlist.set(0,new Weather(weather0,tempday0, date0));
-                mWeatherlist.set(1,new Weather(weather1,tempday1, date1));
-                mWeatherlist.set(2,new Weather(weather2,tempday2, date2));
-                mWeatherlist.set(3,new Weather(weather3,tempday3, date3));
-                mWeatherlist.set(4,new Weather(weather4,tempday4, date4));
-                mWeatherlist.set(5,new Weather(weather5,tempday5, date5));
-                mWeatherlist.set(6,new Weather(weather6,tempday6, date6));
                 mweatherAdapter.notifyDataSetChanged();
             } else {
-                mWeatherlist.set(0,new Weather("null","null","null"));
+                mWeatherlist.add(new Weather("null","null","null"));
                 mweatherAdapter.notifyDataSetChanged();
             }
 

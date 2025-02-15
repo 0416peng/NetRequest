@@ -27,7 +27,7 @@ public class  MainActivity2 extends AppCompatActivity {
         EditText province=findViewById(R.id.province);
         EditText city2=findViewById(R.id.city2);
         Intent intent3 =new Intent(this,MainActivity.class);
-        button2=findViewById(R.id.back);
+        button2=findViewById(R.id.back);//绑定控件
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,7 +37,7 @@ public class  MainActivity2 extends AppCompatActivity {
                 intent3.putExtra("data_province",province2);
                 startActivity(intent3);
                 finish();
-            }
+            }//返回数据
         });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
