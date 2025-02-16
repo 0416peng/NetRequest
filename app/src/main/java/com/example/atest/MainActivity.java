@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.obj != null) {
+            if (msg.obj!= null) {
                 String result = (String) msg.obj;
                 parseJsondataAndShow(result);
             } else {
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                 String visibility = weatherBean.getData().getVisibility();
                 buvisibility.setText("能见度\n" + visibility);
                 List<WeatherBean.DataDTO.IndexDTO> Index = weatherBean.getData().getIndex();
-                if (Index.get(0) != null) {
+                if (Index != null) {
                     WeatherBean.DataDTO.IndexDTO indexDTO1 = Index.get(0);
                     String name1 = indexDTO1.getName();
                     String level1 = indexDTO1.getLevel();
