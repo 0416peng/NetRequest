@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyHolder> {
-    private List<Weather> mWeather =new ArrayList<>();
-    public WeatherAdapter(List<Weather> list){
-        this.mWeather =list;
+    private List<Weather> mWeather = new ArrayList<>();
+
+    public WeatherAdapter(List<Weather> list) {
+        this.mWeather = list;
     }
 
     @NonNull
@@ -26,8 +27,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyHolder
 
     @Override
     public void onBindViewHolder(@NonNull WeatherAdapter.MyHolder holder, int position) {
-        Weather weather=mWeather.get(position);
-        holder.weather.setText( weather.getWeather());
+        Weather weather = mWeather.get(position);
+        holder.weather.setText(weather.getWeather());
         holder.time.setText(weather.getTime());
         holder.temperature.setText(weather.getTemperature());
     }
@@ -41,11 +42,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyHolder
         TextView weather;
         TextView time;
         TextView temperature;
+
         public MyHolder(@NonNull View itemView) {
             super(itemView);
-            weather=itemView.findViewById(R.id.weather1);
-            time=itemView.findViewById(R.id.time1);
-            temperature=itemView.findViewById(R.id.temperature1);
+            weather = itemView.findViewById(R.id.weather1);
+            time = itemView.findViewById(R.id.time1);
+            temperature = itemView.findViewById(R.id.temperature1);
         }
     }
 }

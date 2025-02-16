@@ -1,9 +1,9 @@
 package com.example.atest;
 
-public class Weather{
+public class Weather {
     public String weather;
     public String temperature;
-    public  String time;
+    public String time;
 
     public Weather(String weather, String temperature, String time) {
         this.weather = weather;
@@ -35,8 +35,6 @@ public class Weather{
     public void setTime(String time) {
         this.time = time;
     }
-
-
 
 
 }

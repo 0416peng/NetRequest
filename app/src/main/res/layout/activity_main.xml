@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back"
-    >
+    android:background="@drawable/back">
 
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".MainActivity"
-        >
+        tools:context=".MainActivity">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="70sp">
@@ -76,6 +74,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.025" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -128,6 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/rain"
                 android:layout_width="150dp"
@@ -162,11 +162,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.693" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/pressure"
                 android:layout_width="150dp"
@@ -234,6 +236,7 @@
                 android:text="pm10"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="15sp" />
+
             <TextView
                 android:id="@+id/pm10"
                 android:layout_width="240dp"
@@ -241,6 +244,7 @@
                 android:gravity="center"
                 android:text="0"
                 android:textSize="20sp" />
+
             <TextView
                 android:layout_width="350dp"
                 android:layout_height="50dp"
@@ -248,6 +252,7 @@
                 android:text="so2"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="15sp" />
+
             <TextView
                 android:id="@+id/so2"
                 android:layout_width="400dp"
@@ -255,6 +260,7 @@
                 android:gravity="center"
                 android:text="0"
                 android:textSize="20sp" />
+
             <TextView
                 android:layout_width="500dp"
                 android:layout_height="50dp"
@@ -262,6 +268,7 @@
                 android:text="co"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="15sp" />
+
             <TextView
                 android:id="@+id/co"
                 android:layout_width="560dp"
@@ -277,8 +284,8 @@
                 android:layout_gravity="bottom"
                 android:text="0"
                 android:gravity="center"
-                android:textSize="60dp"
-                />
+                android:textSize="60dp" />
+
             <TextView
                 android:id="@+id/air_level"
                 android:layout_width="150dp"
@@ -286,29 +293,29 @@
                 android:layout_gravity="end|bottom"
                 android:text="0"
                 android:gravity="center"
-                android:textSize="60dp"/>
+                android:textSize="60dp" />
+
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
 
                 android:text="空气质量："
-                android:textSize="15dp"
-                />
+                android:textSize="15dp" />
+
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_gravity="right|center"
                 android:text="空气等级："
-                android:textSize="15dp"
-                />
+                android:textSize="15dp" />
 
         </androidx.cardview.widget.CardView>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="600dp"
-            android:layout_margin="10dp"
-            >
+            android:layout_margin="10dp">
 
             <Button
                 android:id="@+id/diaoyu_index"
@@ -408,7 +415,6 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     </LinearLayout>
